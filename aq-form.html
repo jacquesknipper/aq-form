@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQ - Quotient du Spectre de l'Autisme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .patient-id-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .patient-id-section label {
+            display: block;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .patient-id-section input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #ffc107;
+            border-radius: 5px;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 1em;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+            display: none;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AQ</h1>
+        <p class="subtitle">Quotient du Spectre de l'Autisme</p>
+        
+        <div class="instructions">
+            <h3>📋 Instructions</h3>
+            <p>Il est important de lire chaque question jusqu'au bout et de réfléchir attentivement à la réponse avant de cocher une seule des quatre colonnes.</p>
+        </div>
+        
+        <div class="patient-id-section">
+            <label for="patientId">🔑 Identifiant Patient (obligatoire) :</label>
+            <input type="text" id="patientId" placeholder="Entrez votre identifiant" required>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="loadingMessage" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Envoi en cours...</p>
+        </div>
+        
+        <form id="aqForm">
+            <!-- Questions will be generated by JavaScript -->
+        </form>
+        
+        <button type="button" class="submit-btn" id="submitBtn">Envoyer le questionnaire</button>
+    </div>
+
+    <script>
+        // Configuration
+        const GOOGLE_SCRIPT_URL = 'VOTRE_URL_APPS_SCRIPT_ICI';
+        
+        // Questions with subscales
+        const questions = [
+            {num: 1, text: "Je préfère réaliser des activités avec d'autres personnes plutôt que seul(e).", subscale: "HS", scoreType: "disagree"},
+            {num: 2, text: "Je préfère tout faire continuellement de la même manière.", subscale: "FA", scoreType: "agree"},
+            {num: 3, text: "Quand j'essaye d'imaginer quelque chose, il est très facile de m'en représenter une image mentalement.", subscale: "I", scoreType: "disagree"},
+            {num: 4, text: "Je suis fréquemment tellement absorbé(e) par une chose que je perds tout le reste de vue.", subscale: "FA", scoreType: "agree"},
+            {num: 5, text: "Mon attention est souvent attirée par des bruits discrets que les autres ne remarquent pas.", subscale: "AD", scoreType: "agree"},
+            {num: 6, text: "Je fais habituellement attention aux numéros de plaques d'immatriculation ou à d'autres types d'informations de ce genre.", subscale: "AD", scoreType: "agree"},
+            {num: 7, text: "Les gens me disent souvent que ce que j'ai dit était impoli, même quand moi je pense que c'était poli.", subscale: "C", scoreType: "agree"},
+            {num: 8, text: "Quand je lis une histoire, je peux facilement imaginer à quoi les personnages pourraient ressembler.", subscale: "I", scoreType: "disagree"},
+            {num: 9, text: "Je suis fasciné(e) par les dates.", subscale: "AD", scoreType: "agree"},
+            {num: 10, text: "Au sein d'un groupe, je peux facilement suivre les conversations de plusieurs personnes à la fois.", subscale: "FA", scoreType: "disagree"},
+            {num: 11, text: "Je trouve les situations de la vie en société faciles.", subscale: "HS", scoreType: "disagree"},
+            {num: 12, text: "J'ai tendance à remarquer certains détails que les autres ne voient pas.", subscale: "AD", scoreType: "agree"},
+            {num: 13, text: "Je préférerais aller dans une bibliothèque plutôt qu'à une fête.", subscale: "HS", scoreType: "agree"},
+            {num: 14, text: "Je trouve facile d'inventer des histoires.", subscale: "I", scoreType: "disagree"},
+            {num: 15, text: "Je suis plus facilement attiré(e) par les gens que par les objets.", subscale: "HS", scoreType: "disagree"},
+            {num: 16, text: "J'ai tendance à avoir des centres d'intérêt très importants. Je me tracasse lorsque je ne peux m'y consacrer.", subscale: "FA", scoreType: "agree"},
+            {num: 17, text: "J'apprécie le bavardage en société.", subscale: "C", scoreType: "disagree"},
+            {num: 18, text: "Quand je parle, il n'est pas toujours facile pour les autres de placer un mot.", subscale: "C", scoreType: "agree"},
+            {num: 19, text: "Je suis fasciné(e) par les chiffres.", subscale: "AD", scoreType: "agree"},
+            {num: 20, text: "Quand je lis une histoire, je trouve qu'il est difficile de me représenter les intentions des personnages.", subscale: "I", scoreType: "agree"},
+            {num: 21, text: "Je n'aime pas particulièrement lire des romans.", subscale: "I", scoreType: "agree"},
+            {num: 22, text: "Je trouve qu'il est difficile de se faire de nouveaux amis.", subscale: "HS", scoreType: "agree"},
+            {num: 23, text: "Je remarque sans cesse des schémas réguliers dans les choses qui m'entourent.", subscale: "AD", scoreType: "agree"},
+            {num: 24, text: "Je préférerais aller au cinéma plutôt qu'au musée.", subscale: "I", scoreType: "disagree"},
+            {num: 25, text: "Cela ne me dérange pas si mes habitudes quotidiennes sont perturbées.", subscale: "FA", scoreType: "disagree"},
+            {num: 26, text: "Je remarque souvent que je ne sais pas comment entretenir une conversation.", subscale: "C", scoreType: "agree"},
+            {num: 27, text: "Je trouve qu'il est facile de « lire entre les lignes » lorsque quelqu'un me parle.", subscale: "C", scoreType: "disagree"},
+            {num: 28, text: "Je me concentre habituellement plus sur l'ensemble d'une image que sur les petits détails de celle-ci.", subscale: "AD", scoreType: "disagree"},
+            {num: 29, text: "Je ne suis pas très doué(e) pour me souvenir des numéros de téléphone.", subscale: "AD", scoreType: "disagree"},
+            {num: 30, text: "Je ne remarque habituellement pas les petits changements dans une situation ou dans l'apparence de quelqu'un.", subscale: "AD", scoreType: "disagree"},
+            {num: 31, text: "Je sais m'en rendre compte quand mon interlocuteur s'ennuie.", subscale: "C", scoreType: "disagree"},
+            {num: 32, text: "Je trouve qu'il est facile de faire plus d'une chose à la fois.", subscale: "FA", scoreType: "disagree"},
+            {num: 33, text: "Quand je parle au téléphone, je ne suis pas sûr(e) de savoir quand c'est à mon tour de parler.", subscale: "C", scoreType: "agree"},
+            {num: 34, text: "J'aime faire les choses de manière spontanée.", subscale: "FA", scoreType: "disagree"},
+            {num: 35, text: "Je suis souvent le(la) dernier(ère) à comprendre le sens d'une blague.", subscale: "C", scoreType: "agree"},
+            {num: 36, text: "Je trouve qu'il est facile de décoder ce que les autres pensent ou ressentent juste en regardant leur visage.", subscale: "HS", scoreType: "disagree"},
+            {num: 37, text: "Si je suis interrompu(e), je peux facilement revenir à ce que j'étais en train de faire.", subscale: "FA", scoreType: "disagree"},
+            {num: 38, text: "Je suis doué(e) pour le bavardage en société.", subscale: "C", scoreType: "disagree"},
+            {num: 39, text: "Les gens me disent souvent que je répète continuellement les mêmes choses.", subscale: "C", scoreType: "agree"},
+            {num: 40, text: "Quand j'étais enfant, j'aimais habituellement jouer à des jeux de rôle (docteur, police, etc.) avec les autres.", subscale: "I", scoreType: "disagree"},
+            {num: 41, text: "J'aime collectionner des informations sur des catégories de choses (types de voitures, d'oiseaux, de trains, de plantes, ...).", subscale: "I", scoreType: "agree"},
+            {num: 42, text: "Je trouve qu'il est difficile de s'imaginer dans la peau d'un autre.", subscale: "I", scoreType: "agree"},
+            {num: 43, text: "J'aime planifier avec soin toute activité à laquelle je participe.", subscale: "FA", scoreType: "agree"},
+            {num: 44, text: "J'aime les événements sociaux.", subscale: "HS", scoreType: "disagree"},
+            {num: 45, text: "Je trouve qu'il est difficile de décoder les intentions des autres.", subscale: "HS", scoreType: "agree"},
+            {num: 46, text: "Les nouvelles situations me rendent anxieux(se).", subscale: "FA", scoreType: "agree"},
+            {num: 47, text: "J'aime rencontrer de nouvelles personnes.", subscale: "HS", scoreType: "disagree"},
+            {num: 48, text: "Je suis une personne qui a le sens de la diplomatie.", subscale: "HS", scoreType: "disagree"},
+            {num: 49, text: "Je ne suis pas très doué(e) pour me souvenir des dates de naissance des gens.", subscale: "AD", scoreType: "disagree"},
+            {num: 50, text: "Je trouve qu'il est très facile de jouer à des jeux de rôle avec des enfants.", subscale: "I", scoreType: "disagree"}
+        ];
+        
+        const options = [
+            "Tout à fait d'accord",
+            "Plutôt d'accord",
+            "Plutôt pas d'accord",
+            "Pas du tout d'accord"
+        ];
+        
+        // Generate questions
+        function generateQuestions() {
+            const form = document.getElementById('aqForm');
+            
+            questions.forEach(q => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-text">
+                        <span class="question-number">${q.num}</span>
+                        ${q.text}
+                    </div>
+                    <div class="options">
+                        ${options.map((opt, idx) => `
+                            <div class="option">
+                                <input type="radio" 
+                                       name="q${q.num}" 
+                                       id="q${q.num}_${idx}" 
+                                       value="${idx}" 
+                                       required>
+                                <label for="q${q.num}_${idx}">${opt}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                form.appendChild(questionDiv);
+            });
+        }
+        
+        // Calculate scores
+        function calculateScores() {
+            const scores = {
+                HS: 0,  // Habiletés sociales
+                FA: 0,  // Flexibilité attentionnelle
+                AD: 0,  // Attention aux détails
+                C: 0,   // Communication
+                I: 0,   // Imagination
+                total: 0
+            };
+            
+            const responses = [];
+            
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.num}"]:checked`);
+                if (selected) {
+                    const answerIndex = parseInt(selected.value);
+                    const answerText = options[answerIndex];
+                    let points = 0;
+                    
+                    // Scoring logic
+                    if (q.scoreType === "agree") {
+                        // "Tout à fait d'accord" (0) or "Plutôt d'accord" (1) = 1 point
+                        if (answerIndex === 0 || answerIndex === 1) {
+                            points = 1;
+                        }
+                    } else { // scoreType === "disagree"
+                        // "Plutôt pas d'accord" (2) or "Pas du tout d'accord" (3) = 1 point
+                        if (answerIndex === 2 || answerIndex === 3) {
+                            points = 1;
+                        }
+                    }
+                    
+                    scores[q.subscale] += points;
+                    scores.total += points;
+                    
+                    responses.push({
+                        question: q.num,
+                        text: q.text,
+                        answer: answerText,
+                        subscale: q.subscale,
+                        points: points
+                    });
+                }
+            });
+            
+            return {
+                scores,
+                responses
+            };
+        }
+        
+        // Validate form
+        function validateForm() {
+            const patientId = document.getElementById('patientId').value.trim();
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (!patientId) {
+                errorMsg.textContent = '⚠️ Veuillez entrer votre identifiant patient.';
+                errorMsg.style.display = 'block';
+                document.getElementById('patientId').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+            
+            for (let i = 1; i <= 50; i++) {
+                const answered = document.querySelector(`input[name="q${i}"]:checked`);
+                if (!answered) {
+                    errorMsg.textContent = `⚠️ Veuillez répondre à toutes les questions. Question ${i} n'est pas répondue.`;
+                    errorMsg.style.display = 'block';
+                    document.querySelector(`input[name="q${i}"]`).closest('.question').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    return false;
+                }
+            }
+            
+            errorMsg.style.display = 'none';
+            return true;
+        }
+        
+        // Send email
+        async function sendEmail(patientId, result) {
+            const data = {
+                type: 'AQ',
+                patientId: patientId,
+                timestamp: new Date().toISOString(),
+                scores: result.scores,
+                responses: result.responses
+            };
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                return true;
+            } catch (error) {
+                console.error('Erreur lors de l\'envoi:', error);
+                throw error;
+            }
+        }
+        
+        // Submit handler
+        document.getElementById('submitBtn').addEventListener('click', async function() {
+            if (!validateForm()) {
+                return;
+            }
+            
+            const patientId = document.getElementById('patientId').value.trim();
+            const result = calculateScores();
+            
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+            
+            try {
+                await sendEmail(patientId, result);
+                
+                document.getElementById('loadingMessage').style.display = 'none';
+                const successMsg = document.getElementById('successMessage');
+                successMsg.textContent = '✅ Questionnaire envoyé avec succès ! Merci pour votre participation.';
+                successMsg.style.display = 'block';
+                successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                setTimeout(() => {
+                    if (confirm('Questionnaire envoyé. Voulez-vous recommencer ?')) {
+                        location.reload();
+                    }
+                }, 3000);
+                
+            } catch (error) {
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+                
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.textContent = '❌ Erreur lors de l\'envoi. Vérifiez la configuration.';
+                errorMsg.style.display = 'block';
+                errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+        
+        // Initialize
+        generateQuestions();
+    </script>
+</body>
+</html>
