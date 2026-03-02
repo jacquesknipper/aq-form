@@ -243,7 +243,7 @@
 
     <script>
         // Configuration
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgO49-SaTNXC5bg8l-Cb7BXnRUtTIuYHBK3yhISg1hcmzLjury6B_7YEHMzQcV90Njvw/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPG4RN4aPlMImUhcfK0ShbqKjc5N6JUTvT_EUZTkfjWjMPjRQMmFeLBSn7Z8dbeX5nOQ/exec';
         
         // Questions with subscales
         const questions = [
@@ -374,9 +374,9 @@
                     responses.push({
                         question: q.num,
                         text: q.text,
-                        answer: answerText,
-                        subscale: q.subscale,
-                        points: points
+                        response: answerText,
+                        score: points,
+                        category: q.subscale
                     });
                 }
             });
@@ -419,7 +419,14 @@
                 type: 'AQ',
                 patientId: patientId,
                 timestamp: new Date().toISOString(),
-                scores: result.scores,
+                scores: {
+                    habiletesSociales: result.scores.HS,
+                    flexibiliteAttentionnelle: result.scores.FA,
+                    attentionAuxDetails: result.scores.AD,
+                    communication: result.scores.C,
+                    imagination: result.scores.I,
+                    total: result.scores.total
+                },
                 responses: result.responses
             };
             
